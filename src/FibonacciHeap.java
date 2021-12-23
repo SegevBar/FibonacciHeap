@@ -207,22 +207,151 @@ public class FibonacciHeap
     	private String info;
     	private int rank = 0;
     	private boolean mark = false;
-    	private HeapNode child;
-    	private HeapNode next;
-    	private HeapNode prev;
-    	private HeapNode parent;
+    	private HeapNode child = null;
+    	private HeapNode next = null;
+    	private HeapNode prev = null;
+    	private HeapNode parent = null;
     	private boolean isRoot = false;
 
     	public HeapNode(int key) {
-    		this.key = key;
+    	    this.key = key;
     	}
 
+       /**
+        * return node key
+        * complexity : O(1)
+        */
     	public int getKey() {
     		return this.key;
     	}
 
-    	private setKey(int x) {}
+       /**
+        * update node key to x
+        * complexity : O(1)
+        */
+    	public void setKey(int x) {
+    	    this.key = x;
+        }
 
-    	
-    }
+       /**
+        * return node info
+        * complexity : O(1)
+        */
+       public String getValue() {
+           return this.info;
+       }
+
+       /**
+        * return node rank
+        * complexity : O(1)
+        */
+       public int getRank() {
+           return this.rank;
+       }
+
+       /**
+        * update node rank to r
+        * complexity : O(1)
+        */
+       public void setRank(int r) {
+           this.rank = r;
+       }
+
+       /**
+        * return node mark
+        * complexity : O(1)
+        */
+       public boolean getMark() {
+           return this.mark;
+       }
+
+       /**
+        * update node mark to b
+        * complexity : O(1)
+        */
+       public void setMark(boolean b) {
+           this.mark = b;
+       }
+
+       /**
+        * return node child
+        * complexity : O(1)
+        */
+       public HeapNode getChild() {
+           return this.child;
+       }
+
+       /**
+        * update node child to x
+        * complexity : O(1)
+        */
+       public void setChild(HeapNode x) {
+           this.child = x;
+       }
+
+       /**
+        * return node next (right brother)
+        * complexity : O(1)
+        */
+       public HeapNode getNext() {
+           return this.next;
+       }
+
+       /**
+        * update node next (right brother)
+        * complexity : O(1)
+        */
+       public void setNext(HeapNode x) {
+           this.next = x;
+       }
+
+       /**
+        * return node prev (left brother)
+        * complexity : O(1)
+        */
+       public HeapNode getPrev() {
+           return this.prev;
+       }
+
+       /**
+        * update node prev (left brother)
+        * complexity : O(1)
+        */
+       public void setPrev(HeapNode x) {
+           this.prev = x;
+       }
+
+       /**
+        * return node parent
+        * complexity : O(1)
+        */
+       public HeapNode getParent() {
+           return this.parent;
+       }
+
+       /**
+        * update node parent to p
+        * complexity : O(1)
+        */
+       public void setParent(HeapNode p) {
+           this.parent = p;
+       }
+
+       /**
+        * return node isRoot
+        * complexity : O(1)
+        */
+       public boolean getIsRoot() {
+           return this.isRoot;
+       }
+
+       /**
+        * update node isRoot to b
+        * complexity : O(1)
+        */
+       public void setIsRoot(boolean b) {
+           this.isRoot = b;
+       }
+
+   }
 }
