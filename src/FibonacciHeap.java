@@ -5,6 +5,14 @@
  */
 public class FibonacciHeap
 {
+    private HeapNode head = null;
+    private HeapNode tail = null;
+    private HeapNode min = null;
+    private int size = 0;
+    private int treeCount = 0;
+    private int markedCount = 0;
+    private int linkedCount = 0;
+    private int cutsCount = 0;
 
    /**
     * public boolean isEmpty()
@@ -42,7 +50,14 @@ public class FibonacciHeap
      	
     }
 
-   /**
+    /**
+     *
+     */
+    private void consolidate() {
+
+    }
+
+    /**
     * public HeapNode findMin()
     *
     * Returns the node of the heap whose key is minimal, or null if the heap is empty.
@@ -111,7 +126,22 @@ public class FibonacciHeap
     	return; // should be replaced by student code
     }
 
-   /**
+    /**
+     *
+     */
+    private void cascadingCuts(HeapNode x, HeapNode y) {
+
+    }
+
+    /**
+     *
+     */
+    private void cut(HeapNode x, HeapNode y) {
+
+    }
+
+
+    /**
     * public int potential() 
     *
     * This function returns the current potential of the heap, which is:
@@ -174,6 +204,14 @@ public class FibonacciHeap
     public static class HeapNode{
 
     	public int key;
+    	private String info;
+    	private int rank = 0;
+    	private boolean mark = false;
+    	private HeapNode child;
+    	private HeapNode next;
+    	private HeapNode prev;
+    	private HeapNode parent;
+    	private boolean isRoot = false;
 
     	public HeapNode(int key) {
     		this.key = key;
@@ -182,5 +220,9 @@ public class FibonacciHeap
     	public int getKey() {
     		return this.key;
     	}
+
+    	private setKey(int x) {}
+
+    	
     }
 }
