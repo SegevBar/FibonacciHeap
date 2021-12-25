@@ -378,11 +378,10 @@ public class FibonacciHeap {
     * In words: The potential equals to the number of trees in the heap
     * plus twice the number of marked nodes in the heap.
      *
-     * complexity :
+     * complexity : O(1)
     */
-    public int potential() 
-    {    
-    	return -234; // should be replaced by student code
+    public int potential() {
+    	return this.treeCount + 2 * this.markedCount;
     }
 
    /**
@@ -393,11 +392,10 @@ public class FibonacciHeap {
     * trees of the same rank, and generates a tree of rank bigger by one, by hanging the
     * tree which has larger value in its root under the other tree.
     *
-    * complexity :
+    * complexity : O(1)
     */
-    public static int totalLinks()
-    {    
-    	return -345; // should be replaced by student code
+    public static int totalLinks() {
+    	return linkedCount;
     }
 
    /**
@@ -407,11 +405,10 @@ public class FibonacciHeap {
     * run-time of the program. A cut operation is the operation which disconnects a subtree
     * from its parent (during decreaseKey/delete methods).
     *
-    * complexity :
+    * complexity : O(1)
     */
-    public static int totalCuts()
-    {    
-    	return -456; // should be replaced by student code
+    public static int totalCuts() {
+    	return cutsCount;
     }
 
      /**
