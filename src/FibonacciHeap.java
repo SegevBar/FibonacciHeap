@@ -79,6 +79,10 @@ public class FibonacciHeap {
             while (currChild != null) {
                 currChild.setParent(null);
                 currChild.setIsRoot(true);
+                if (currChild.getMark()) {
+                    currChild.setMark(false);
+                    this.markedCount--;
+                }
                 if (!currChild.hasNext()) {
                     break;
                 }
@@ -341,6 +345,8 @@ public class FibonacciHeap {
     *
     * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
     * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
+    *
+    * complexity : O(log n)
     */
     public void decreaseKey(HeapNode x, int delta) {
     	x.setKey(x.getKey()-delta);  //decrease x key by delta
@@ -351,21 +357,69 @@ public class FibonacciHeap {
     }
 
     /**
+     * private void cascadingCuts(HeapNode x, HeapNode y)
      *
+     * if child is smaller than parent- cut child from tree
+     * if parent is not a root and is not marked - mark it. else - call recursively to cascadingCuts
      *
-     * complexity :
+     * complexity : O(log n)
      */
     private void cascadingCuts(HeapNode x, HeapNode y) {
-
+        this.cut(x,y);  //cut x from its parent y
+        if (!(y.getIsRoot())) {  //mark y if it is not a root
+            //if y is not marked - mark it
+            if (y.getMark() == false) {
+                y.setMark(true);
+                this.markedCount++;
+            }
+            //if y is already marked - call cascading cur recursively
+            else {
+                this.cascadingCuts(y, y.getParent());
+            }
+        }
     }
 
     /**
+     * private void cut(HeapNode x, HeapNode y)
      *
+     * cut x from y
      *
-     * complexity :
+     * complexity : O(1)
      */
     private void cut(HeapNode x, HeapNode y) {
-
+        cutsCount++;
+        //x becomes a root - update fields accordingly
+        this.treeCount++;  //update treeCount
+        if (x.getMark()) {  //if x was marked - turn it off and update markedCount of the heap
+            x.setMark(false);
+            this.markedCount--;
+        }
+        x.setIsRoot(true);  //turn on root flag
+        //update min if x key is smaller than min key
+        if (x.getKey() < this.min.getKey()) {
+            this.min = x;
+        }
+        //update y child pointer and x brothers pointers
+        if (y.getRank() == 1) {
+            y.setChild(null);
+        } else {
+            if (y.getChild() == x) {
+                y.setChild(x.getNext());
+                x.getNext().setPrev(null);
+            }
+            else {
+                x.getPrev().setNext(x.getNext());
+                if (x.hasNext()) {
+                    x.getNext().setPrev(x.getPrev());
+                }
+            }
+        }
+        y.setRank(y.getRank()-1);  //update y rank
+        //update x pointer
+        x.setNext(this.head);
+        x.setPrev(null);
+        x.setParent(null);
+        this.head = x;
     }
 
 
@@ -419,12 +473,31 @@ public class FibonacciHeap {
     *  
     * ###CRITICAL### : you are NOT allowed to change H.
     *
-    * complexity :
+    * complexity : O(k deg(H))
     */
-    public static int[] kMin(FibonacciHeap H, int k)
-    {    
-        int[] arr = new int[100];
-        return arr; // should be replaced by student code
+    public static int[] kMin(FibonacciHeap H, int k) {
+        FibonacciHeap Hk = new FibonacciHeap();  //create a help heap
+        int[] kMinNodes = new int[k];  //create the array to be returned
+        //add the min key to array
+        if (H.findMin() != null) {
+            kMinNodes[0] = H.findMin().getKey();
+        }
+        HeapNode curr = H.findMin();  //create a pointer to point on next minimum node in H
+        HeapNode currMin = curr;  //create traveling pointer on H heap
+        for (int i = 1; i < kMinNodes.length; i++) {
+            curr = curr.getChild();  //go to current level minimum child
+            while (curr != null) {  //add the current level minimum key children to Hk
+                Hk.insert(curr.getKey());
+                if (Hk.findMin().getKey() == curr.getKey()) {
+                    currMin = curr;
+                }
+                curr = curr.getNext();
+            }
+            kMinNodes[i] = Hk.findMin().getKey();  //add Hk minimum to array - this is the next minimum key in H
+            curr = currMin;
+            Hk.deleteMin();  //delete Hk minimum to rearrange Hk to binomial heap
+        }
+        return kMinNodes;
     }
     
    /**
