@@ -47,6 +47,9 @@ public class FibonacciHeap {
 
     	//insert node to head of linked roots list
         newHeapNode.setNext(this.head);
+        if (this.head != null) {
+            this.head.setPrev(newHeapNode);
+        }
         this.head = newHeapNode;
 
         newHeapNode.setIsRoot(true);  //update node to be a root

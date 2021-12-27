@@ -128,17 +128,14 @@ public class HeapPrinter {
         /* Build an example */
         FibonacciHeap heap = new FibonacciHeap();
 
-        heap.insert(20);
-        heap.insert(8);
         heap.insert(3);
-        heap.insert(100);
-        heap.insert(15);
-        heap.insert(18);
         heap.insert(1);
+        heap.insert(5);
         heap.insert(2);
-        heap.insert(7);
-        heap.deleteMin();
-        heap.insert(500);
+        heap.insert(4);
+
+        //heap.deleteMin();
+
 
         /* Print */
         stream.println("Printing in verbose mode:");
