@@ -40,7 +40,7 @@ public class FibonacciHeap {
     public HeapNode insert(int key) {
     	HeapNode newHeapNode = new HeapNode(key);
 
-    	//update tail if head is currently empty
+    	//update tail if heap is currently empty
         if (this.isEmpty()) {
             this.tail = newHeapNode;
         }
@@ -54,7 +54,9 @@ public class FibonacciHeap {
         this.treeCount++;  //update number of trees + 1
 
         //update min if necessary
-        if (key < this.min.getKey()) {
+        if (this.min == null) {
+            this.min = newHeapNode;
+        } else if (key < this.min.getKey()) {
             this.min = newHeapNode;
         }
     	return newHeapNode;
@@ -68,64 +70,66 @@ public class FibonacciHeap {
     * complexity : O(n)
     */
     public void deleteMin() {
-     	HeapNode currChild = this.min.getChild();
+        if (this.min != null) {
+            HeapNode currChild = this.min.getChild();
 
-     	if (currChild != null) {
-            //connect left child of min to min prev
-            currChild.setPrev(this.min.getPrev());
-            this.min.getPrev().setNext(currChild);
+            if (currChild != null) {
+                //connect left child of min to min prev
+                currChild.setPrev(this.min.getPrev());
+                this.min.getPrev().setNext(currChild);
 
-            //update min children to be independent trees
-            while (currChild != null) {
-                currChild.setParent(null);
-                currChild.setIsRoot(true);
-                if (currChild.getMark()) {
-                    currChild.setMark(false);
-                    this.markedCount--;
+                //update min children to be independent trees
+                while (currChild != null) {
+                    currChild.setParent(null);
+                    currChild.setIsRoot(true);
+                    if (currChild.getMarked()) {
+                        currChild.setMark(false);
+                        this.markedCount--;
+                    }
+                    if (!currChild.hasNext()) {
+                        break;
+                    }
+                    currChild = currChild.getNext();
                 }
-                if (!currChild.hasNext()) {
-                    break;
-                }
-                currChild = currChild.getNext();
+
+                //connect right child of min to min next
+                currChild.setNext(this.min.getNext());
+                this.min.getNext().setPrev(currChild);
             }
 
-            //connect right child of min to min next
-            currChild.setNext(this.min.getNext());
-            this.min.getNext().setPrev(currChild);
-        }
-
-        //if min is head- update to min next
-        if (this.min == this.head) {
-            this.head = this.min.getNext();
-        }
-        //if min is tail- update to min prev
-        if (this.min == this.tail) {
-            this.tail = this.min.getPrev();
-        }
-
-        //disconnect all min pointers
-        this.min.setChild(null);
-        this.min.setPrev(null);
-        this.min.setNext(null);
-
-        //consolidate heap
-        if (!(this.isEmpty())) {
-            this.consolidate();
-        }
-
-        //update heap size, heap tree count, and min
-        this.size--;
-        this.treeCount = 0;
-        HeapNode curr = this.head;
-        HeapNode currMin = this.head;
-        while (curr != null) {
-            if (curr.getKey() < currMin.getKey()) { //update current minimum if key is smaller
-                currMin = curr;
+            //if min is head- update to min next
+            if (this.min == this.head) {
+                this.head = this.min.getNext();
             }
-            this.treeCount++;
-            curr = curr.getNext();
+            //if min is tail- update to min prev
+            if (this.min == this.tail) {
+                this.tail = this.min.getPrev();
+            }
+
+            //disconnect all min pointers
+            this.min.setChild(null);
+            this.min.setPrev(null);
+            this.min.setNext(null);
+
+            //consolidate heap
+            if (!(this.isEmpty())) {
+                this.consolidate();
+            }
+
+            //update heap size, heap tree count, and min
+            this.size--;
+            this.treeCount = 0;
+            HeapNode curr = this.head;
+            HeapNode currMin = this.head;
+            while (curr != null) {
+                if (curr.getKey() < currMin.getKey()) { //update current minimum if key is smaller
+                    currMin = curr;
+                }
+                this.treeCount++;
+                curr = curr.getNext();
+            }
+            this.min = currMin;  //update heap minimum to point currMin
         }
-        this.min = currMin;  //update heap minimum to point currMin
     }
 
     /**
@@ -368,7 +372,7 @@ public class FibonacciHeap {
         this.cut(x,y);  //cut x from its parent y
         if (!(y.getIsRoot())) {  //mark y if it is not a root
             //if y is not marked - mark it
-            if (y.getMark() == false) {
+            if (y.getMarked() == false) {
                 y.setMark(true);
                 this.markedCount++;
             }
@@ -390,7 +394,7 @@ public class FibonacciHeap {
         cutsCount++;
         //x becomes a root - update fields accordingly
         this.treeCount++;  //update treeCount
-        if (x.getMark()) {  //if x was marked - turn it off and update markedCount of the heap
+        if (x.getMarked()) {  //if x was marked - turn it off and update markedCount of the heap
             x.setMark(false);
             this.markedCount--;
         }
@@ -568,7 +572,7 @@ public class FibonacciHeap {
         * return node mark
         * complexity : O(1)
         */
-       public boolean getMark() {
+       public boolean getMarked() {
            return this.mark;
        }
 
