@@ -98,12 +98,6 @@ public class FibonacciHeap {
                 //connect right child of min to min next
                 currChild.setNext(this.min.getNext());
                 this.min.getNext().setPrev(currChild);
-
-                HeapNode p = this.head;
-                while (p != null) {
-                    System.out.println(p.getKey());
-                    p = p.getNext();
-                }
             }
             else {
                 if (this.min != this.head) {
@@ -147,7 +141,6 @@ public class FibonacciHeap {
                 curr = curr.getNext();
             }
             this.min = currMin;  //update heap minimum to point currMin
-            System.out.println(this.min.getKey());
         }
     }
 
@@ -161,43 +154,48 @@ public class FibonacciHeap {
      */
     private void consolidate() {
         //create node array size log(n)
-        int arraySize = (int) Math.ceil(Math.log(this.size));
+        int arraySize = (int) Math.ceil(Math.log(this.size+1)/Math.log(2));
         HeapNode[] buckets = new HeapNode[arraySize];
 
         //Successive Linking
         HeapNode curr = this.head;
         while (curr != null) {
+            HeapNode nextTree = curr.getNext();
             int currRank = curr.getRank();
-            HeapNode rankBucket = buckets[currRank];
-            if (rankBucket == null) {
-                rankBucket = curr;
-            }
-            else {
-                //if the i place in the array is not null - link the trees. smaller key is the root.
+
+            //if the i place in the array is not null - link the trees. smaller key is the root.
+            while (currRank < buckets.length && buckets[currRank] != null && curr != null) {
                 HeapNode parent;
                 HeapNode child;
-                if (rankBucket.getKey() < curr.getKey()) {
-                    parent = rankBucket;
+                if (buckets[currRank].getKey() < curr.getKey()) {
+                    parent = buckets[currRank];
                     child = curr;
                 } else {
                     parent = curr;
-                    child = rankBucket;
+                    child = buckets[currRank];
                 }
                 //update nodes fields - parent and child pointers, rank and isRoot flag
                 parent.setIsRoot(true);
                 child.setIsRoot(false);
                 child.setNext(parent.getChild());
-                parent.getChild().setPrev(child);
+                if (parent.getChild() != null) {
+                    parent.getChild().setPrev(child);
+                }
                 child.setParent(parent);
                 parent.setChild(child);
-                parent.setRank(parent.getRank()+1);
+
+                parent.setRank(parent.getRank() + 1);
                 //update array
-                buckets[parent.getRank()] = parent;
+                curr = parent;
                 buckets[currRank] = null;
+                currRank = parent.getRank();
+
                 //update links counter
                 this.linkedCount++;
             }
-            curr = curr.getNext();
+            buckets[currRank] = curr;
+            curr = nextTree;
+
         }
         //build the new linked list
         HeapNode currTree = buckets[0];
@@ -223,7 +221,7 @@ public class FibonacciHeap {
             }
         }
         this.tail = currTree;
-        //currTree.setNext(null);
+        currTree.setNext(null);
     }
 
     /**
