@@ -134,8 +134,11 @@ public class HeapPrinter {
         heap.insert(2);
         heap.insert(4);
 
-        //heap.deleteMin();
+        System.out.println(heap.findMin().getKey());
 
+        heap.deleteMin();
+
+        System.out.println(heap.findMin().getKey());
 
         /* Print */
         stream.println("Printing in verbose mode:");

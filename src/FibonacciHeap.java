@@ -98,7 +98,22 @@ public class FibonacciHeap {
                 //connect right child of min to min next
                 currChild.setNext(this.min.getNext());
                 this.min.getNext().setPrev(currChild);
+
+                HeapNode p = this.head;
+                while (p != null) {
+                    System.out.println(p.getKey());
+                    p = p.getNext();
+                }
             }
+            else {
+                if (this.min != this.head) {
+                    this.min.getPrev().setNext(this.min.getNext());
+                }
+                if (this.min != this.tail) {
+                    this.min.getNext().setPrev(this.min.getPrev());
+                }
+            }
+
 
             //if min is head- update to min next
             if (this.min == this.head) {
