@@ -129,6 +129,7 @@ public class FibonacciHeap {
                 curr = curr.getNext();
             }
             this.min = currMin;  //update heap minimum to point currMin
+            System.out.println(this.min.getKey());
         }
     }
 
@@ -203,8 +204,8 @@ public class FibonacciHeap {
                 }
             }
         }
-        this.tail = nextTree;
-        nextTree.setNext(null);
+        this.tail = currTree;
+        //currTree.setNext(null);
     }
 
     /**

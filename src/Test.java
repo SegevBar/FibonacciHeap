@@ -195,7 +195,6 @@ public class Test {
         }
 
         for (int i = 0; i < 5; i++) {
-            System.out.println(fibonacciHeap.findMin().getKey());
             if (fibonacciHeap.findMin().getKey() != i) {
                 bugFound(test);
                 return;
