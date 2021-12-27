@@ -79,10 +79,24 @@ public class FibonacciHeap {
             if (currChild != null) {
                 //connect left child of min to min prev
                 currChild.setPrev(this.min.getPrev());
-                this.min.getPrev().setNext(currChild);
+                if (this.min.getPrev() != null) {
+                    this.min.getPrev().setNext(currChild);
+                }
 
                 //update min children to be independent trees
+                boolean seenHead = true;
+                boolean seenTail = true;
+                if (this.min == this.head) {
+                    seenHead = false;
+                }
+                if (this.min == this.tail) {
+                    seenTail = false;
+                }
                 while (currChild != null) {
+                    if (!seenHead) {
+                        this.head = currChild;
+                        seenHead = true;
+                    }
                     currChild.setParent(null);
                     currChild.setIsRoot(true);
                     if (currChild.getMarked()) {
@@ -90,6 +104,9 @@ public class FibonacciHeap {
                         this.markedCount--;
                     }
                     if (!currChild.hasNext()) {
+                        if (!seenTail) {
+                            this.tail = currChild;
+                        }
                         break;
                     }
                     currChild = currChild.getNext();
@@ -97,7 +114,10 @@ public class FibonacciHeap {
 
                 //connect right child of min to min next
                 currChild.setNext(this.min.getNext());
-                this.min.getNext().setPrev(currChild);
+                if (this.min.getNext() != null) {
+                    this.min.getNext().setPrev(currChild);
+                }
+
             }
             else {
                 if (this.min != this.head) {
@@ -106,16 +126,10 @@ public class FibonacciHeap {
                 if (this.min != this.tail) {
                     this.min.getNext().setPrev(this.min.getPrev());
                 }
-            }
-
-
-            //if min is head- update to min next
-            if (this.min == this.head) {
-                this.head = this.min.getNext();
-            }
-            //if min is tail- update to min prev
-            if (this.min == this.tail) {
-                this.tail = this.min.getPrev();
+                if (this.size == 1) {
+                    this.head = null;
+                    this.tail = null;
+                }
             }
 
             //disconnect all min pointers
@@ -161,10 +175,11 @@ public class FibonacciHeap {
         HeapNode curr = this.head;
         while (curr != null) {
             HeapNode nextTree = curr.getNext();
+            curr.setPrev(null);
             int currRank = curr.getRank();
 
             //if the i place in the array is not null - link the trees. smaller key is the root.
-            while (currRank < buckets.length && buckets[currRank] != null && curr != null) {
+            while (currRank < buckets.length && buckets[currRank] != null) {
                 HeapNode parent;
                 HeapNode child;
                 if (buckets[currRank].getKey() < curr.getKey()) {
@@ -197,6 +212,7 @@ public class FibonacciHeap {
             curr = nextTree;
 
         }
+
         //build the new linked list
         HeapNode currTree = buckets[0];
         HeapNode nextTree = buckets[0];

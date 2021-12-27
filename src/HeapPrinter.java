@@ -1,6 +1,7 @@
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -128,26 +129,35 @@ public class HeapPrinter {
         /* Build an example */
         FibonacciHeap heap = new FibonacciHeap();
 
-        heap.insert(3);
-        heap.insert(1);
-        heap.insert(5);
-        heap.insert(2);
-        heap.insert(4);
-
-        //System.out.println(heap.findMin().getKey());
         stream.println("Printing in verbose mode:");
         HeapPrinter.print(heap, true);
 
-        heap.deleteMin();
+        ArrayList<Integer> numbers = new ArrayList<>();
 
-        //System.out.println(heap.findMin().getKey());
+        for (int i = 0; i < 5; i++) {
+            numbers.add(i);
+        }
+        Collections.shuffle(numbers);
 
-        /* Print */
+        for (int i = 0; i < 5; i++) {
+            System.out.println(numbers.get(i));
+            heap.insert(numbers.get(i));
+        }
+
         stream.println("Printing in verbose mode:");
         HeapPrinter.print(heap, true);
 
-        stream.println("Printing in regular mode:");
-        HeapPrinter.print(heap, false);
+        for (int i = 0; i < 5; i++) {
+            if (heap.findMin().getKey() != i) {
+                System.out.println("error");
+            }
+            heap.deleteMin();
+            stream.println("Printing in verbose mode:");
+            HeapPrinter.print(heap, true);
+        }
+
+//        stream.println("Printing in regular mode:");
+//        HeapPrinter.print(heap, false);
     }
 
     public static void main(String[] args) {
