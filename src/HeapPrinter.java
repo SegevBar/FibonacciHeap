@@ -259,7 +259,7 @@ public class HeapPrinter {
         fibHeap.deleteMin();
 
         stream.println("Printing in verbose mode:");
-        HeapPrinter.print(fibHeap, true);
+        HeapPrinter.print(fibHeap, false);
 
         int[] kmin = FibonacciHeap.kMin(fibHeap, 10);
         for (int i = 0; i < kmin.length; i++) {

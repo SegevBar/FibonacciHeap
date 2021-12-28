@@ -14,8 +14,8 @@ public class Test {
 
     public static void main(String[] args) {
 
-        grade = 80.0;
-        testScore = 64.0 / 29;
+        grade = 100.0;
+        //testScore = 64.0 / 29;
 
         try {
             test0();
@@ -174,7 +174,7 @@ public class Test {
             System.out.println("Bug found in " + "test30");
             grade -= 8;
         }
-
+        System.out.println(grade);
         System.exit((int) grade);
     }
 
@@ -974,6 +974,7 @@ public class Test {
         int[] kmin = FibonacciHeap.kMin(fibonacciHeap, 10);
         for (int i = 0; i < kmin.length; i++) {
             if (kmin[i] != i + 1) {
+                System.out.println("test29");
                 grade -= 8;
                 return;
             }
@@ -994,6 +995,7 @@ public class Test {
             FibonacciHeap.HeapNode min = firstFibonacciHeap.findMin();
             int minValue = min.getKey();
             if (minValue != i) {
+                System.out.println("test30");
                 grade -= 8;
             }
             firstFibonacciHeap.deleteMin();
