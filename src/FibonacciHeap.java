@@ -122,13 +122,13 @@ public class FibonacciHeap {
             else {
                 if (this.min != this.head) {
                     this.min.getPrev().setNext(this.min.getNext());
+                } else {
+                    this.head = this.min.getNext();
                 }
                 if (this.min != this.tail) {
                     this.min.getNext().setPrev(this.min.getPrev());
-                }
-                if (this.size == 1) {
-                    this.head = null;
-                    this.tail = null;
+                } else {
+                    this.tail = this.min.getPrev();
                 }
             }
 
@@ -373,7 +373,7 @@ public class FibonacciHeap {
     * complexity : O(n)
     */
     public void delete(HeapNode x) {
-    	this.decreaseKey(x, this.min.getKey()-1); //update x to be the minimum root
+    	this.decreaseKey(x, x.getKey()-this.min.getKey()+10); //update x to be the minimum root
         this.deleteMin();  //delete minimum and consolidate the heap
     }
 
@@ -390,6 +390,10 @@ public class FibonacciHeap {
         //if the heap is illegal - use cascading cuts
         if (!x.getIsRoot() && x.getParent().getKey() > x.getKey()) {
             this.cascadingCuts(x, x.getParent());
+        } else {
+            if (x.getIsRoot() && x.getKey() < this.min.getKey()) {
+                this.min = x;
+            }
         }
     }
 

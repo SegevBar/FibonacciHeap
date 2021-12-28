@@ -127,33 +127,60 @@ public class HeapPrinter {
 
     public static void demo() {
         /* Build an example */
-        FibonacciHeap heap = new FibonacciHeap();
+        FibonacciHeap fibHeap = new FibonacciHeap();
 
         stream.println("Printing in verbose mode:");
-        HeapPrinter.print(heap, true);
+        HeapPrinter.print(fibHeap, true);
 
-        ArrayList<Integer> numbers = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            numbers.add(i);
+        Heap heap = new Heap();
+        for (int i = 0; i < 10; i++) {//@@@@@@@ i<1000 @@@@@
+            heap.insert(10 + i);
+            fibHeap.insert(10 + i);
         }
-        Collections.shuffle(numbers);
+        System.out.println("curr min 1 = " + fibHeap.findMin().getKey());
+        for (int i = 9; i >= 0; i--) {
+            heap.insert(30 + i);
+            fibHeap.insert(30 + i);
+        }
+        System.out.println("curr min 2 = " + fibHeap.findMin().getKey());
+        System.out.println("size= " + fibHeap.size());
+        ArrayList<FibonacciHeap.HeapNode> nodes = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
-            System.out.println(numbers.get(i));
-            heap.insert(numbers.get(i));
+        for (int i = 20; i < 30; i++) {
+            heap.insert(i);
+            nodes.add(fibHeap.insert(i));
+        }
+        System.out.println("curr min 3 = " + fibHeap.findMin().getKey());
+
+//        stream.println("Printing in verbose mode:");
+//        HeapPrinter.print(fibHeap, true);
+
+        for (int i = 20; i < 25; i++) {
+            if (heap.findMin() != fibHeap.findMin().getKey()) {
+                System.out.println("error1");
+            } else if (heap.size() != fibHeap.size()) {
+                System.out.println("error2");
+            }
+            System.out.println("curr min 4 = " + fibHeap.findMin().getKey());
+            System.out.println(nodes.get(i-20).getKey());
+            heap.delete(i);
+            fibHeap.delete(nodes.get(i - 20));
+            //stream.println("Printing in verbose mode:");
+            //HeapPrinter.print(fibHeap, true);
+
         }
 
-        stream.println("Printing in verbose mode:");
-        HeapPrinter.print(heap, true);
-
-        for (int i = 0; i < 5; i++) {
-            if (heap.findMin().getKey() != i) {
-                System.out.println("error");
+        while (!heap.isEmpty()) {
+            if (heap.findMin() != fibHeap.findMin().getKey() || heap.size() != fibHeap.size()) {
+                System.out.println("error3");
             }
             heap.deleteMin();
-            stream.println("Printing in verbose mode:");
-            HeapPrinter.print(heap, true);
+            fibHeap.deleteMin();
+            System.out.println("curr min 5 = " + fibHeap.findMin().getKey());
+
+        }
+        if (!fibHeap.isEmpty()) {
+            System.out.println("error4");
         }
 
 //        stream.println("Printing in regular mode:");
