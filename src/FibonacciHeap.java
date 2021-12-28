@@ -522,68 +522,30 @@ public class FibonacciHeap {
     * complexity : O(k deg(H))
     */
     public static int[] kMin(FibonacciHeap H, int k) {
-        FibonacciHeap Hk = new FibonacciHeap();  //create a help heap
-        int[] kMinNodes = new int[k];  //create the array to be returned
-
-        if (H.isEmpty()) {
+        if (k == 0 || H.isEmpty()) {
             return new int[0];
         }
+        int[] kMinNodes = new int[k];
+        FibonacciHeap heapForKMin = new FibonacciHeap();
 
-        HeapNode curr = H.findMin();  //create a pointer to point on next minimum node in H
-        HeapNode currMin = curr;  //create traveling pointer on H heap
-        Hk.insert(H.findMin().getKey());
+        HeapNode tempMin; // hold the node in H with the same key as the min in heapForKMin.
+        HeapNode childOfLastMin; // hold one of the children of tempMin.
+        HeapNode tempForPointer; // hold the last inserted node to heapForKMin.
 
-        for (int i = 0; i < kMinNodes.length; i++) {
-            System.out.println();
-            System.out.println("i=" + i);
-            System.out.println("Hk current min=" + Hk.findMin().getKey());
+        tempForPointer = heapForKMin.insert(H.findMin().getKey());
+        tempForPointer.setkMin(H.findMin());
 
-            kMinNodes[i] = Hk.findMin().getKey();  //add Hk minimum to array - this is the next minimum key in H
-            Hk.deleteMin();  //delete Hk minimum to rearrange Hk to binomial heap
+        for (int i = 0; i < k; i++) {
+            tempMin = heapForKMin.findMin().getkMin();
+            kMinNodes[i] = tempMin.getKey();
+            heapForKMin.deleteMin();
+            childOfLastMin = tempMin.getChild();
 
-            if (curr.getChild() != null) {
-                curr = curr.getChild();  //go to current level minimum child
-                while (curr != null) {  //add the current level minimum key children to Hk
-                    Hk.insert(curr.getKey());
-                    if (Hk.findMin().getKey() == curr.getKey()) { //keep a pointer to the minimum key node of current level
-                        System.out.println("Hk curr min=" + Hk.findMin().getKey());
-                        System.out.println("curr key="+ curr.getKey());
-                        currMin = curr;
-
-                    }
-                    curr = curr.getNext();
-                }
-
-            } else {
-                System.out.println("H head=" + H.getHead().getKey() + " curr=" + curr.getKey() + " curr next=" + curr.getNext() + " curr pre=" + curr.getPrev());
-                while (curr.getParent() != H.getHead() && (curr.getNext() == null && curr.getPrev() == null)) {
-                    curr = curr.getParent();
-
-                }
-                curr = curr.getParent();
-                curr = curr.getChild();
-
-                System.out.println("curr curr=" +curr.getKey());
-
-                while (curr != null) {  //add the current level minimum key children to Hk
-                    if (Hk.findMin().getKey() == curr.getKey()) { //keep a pointer to the minimum key node of current level
-                        currMin = curr;
-
-                    }
-                    curr = curr.getNext();
-                    System.out.println(Hk.findMin().getKey());
-                }
+            while (childOfLastMin != null) {
+                tempForPointer = heapForKMin.insert(childOfLastMin.getKey());
+                tempForPointer.setkMin(childOfLastMin);
+                childOfLastMin = childOfLastMin.getNext();
             }
-            curr = currMin;
-
-            System.out.println("curr after everything= " + curr.getKey());
-
-            for (int j = 0; j < kMinNodes.length; j++) {
-                System.out.println("nodes list " + j + " " + kMinNodes[j] );
-            }
-
-
-            System.out.println("Hk current min=" + Hk.findMin().getKey());
         }
         return kMinNodes;
     }
@@ -606,6 +568,7 @@ public class FibonacciHeap {
     	private HeapNode prev = null;
     	private HeapNode parent = null;
     	private boolean isRoot = false;
+    	private HeapNode kMin = null;
 
     	public HeapNode(int key) {
     	    this.key = key;
@@ -753,6 +716,20 @@ public class FibonacciHeap {
         */
        public void setIsRoot(boolean b) {
            this.isRoot = b;
+       }
+
+       /**
+        *
+        */
+       public HeapNode getkMin() {
+           return this.kMin;
+       }
+
+       /**
+        *
+        */
+       public void setkMin(HeapNode node) {
+           this.kMin = node;
        }
 
    }
