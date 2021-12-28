@@ -349,23 +349,26 @@ public class Test {
         }
 
         for (int i = 2000; i < 2500; i++) {
+            //System.out.println();
+            //System.out.println("round " + (i-2000));
+
             if (heap.findMin() != fibonacciHeap.findMin().getKey()) {
-                System.out.println("error1");
                 bugFound(test);
                 return;
             } else if (heap.size() != fibonacciHeap.size()) {
-                System.out.println("error2");
+                //System.out.println("error2");
                 bugFound(test);
                 return;
             }
             heap.delete(i);
+            //System.out.println("key to delete=" + nodes.get(i - 2000).getKey() + nodes.get(i - 2000).getIsRoot());
             fibonacciHeap.delete(nodes.get(i - 2000));
         }
 
         while (!heap.isEmpty()) {
             if (heap.findMin() != fibonacciHeap.findMin().getKey() || heap.size() != fibonacciHeap.size()) {
                 bugFound(test);
-                System.out.println("error3");
+                //System.out.println("error3");
                 return;
             }
             heap.deleteMin();

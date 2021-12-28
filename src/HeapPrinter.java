@@ -125,7 +125,7 @@ public class HeapPrinter {
         printHeapNode(heap.getHead(), null, list, verbose);
     }
 
-    public static void demo() {
+    public static void test1() {
         /* Build an example */
         FibonacciHeap fibHeap = new FibonacciHeap();
 
@@ -142,41 +142,50 @@ public class HeapPrinter {
             heap.insert(30 + i);
             fibHeap.insert(30 + i);
         }
-        System.out.println("curr min 2 = " + fibHeap.findMin().getKey());
-        System.out.println("size= " + fibHeap.size());
+        //System.out.println("curr min 2 = " + fibHeap.findMin().getKey());
+        //System.out.println("size= " + fibHeap.size());
         ArrayList<FibonacciHeap.HeapNode> nodes = new ArrayList<>();
 
         for (int i = 20; i < 30; i++) {
             heap.insert(i);
             nodes.add(fibHeap.insert(i));
         }
-        System.out.println("curr min 3 = " + fibHeap.findMin().getKey());
+        //System.out.println("curr min 3 = " + fibHeap.findMin().getKey());
 
-//        stream.println("Printing in verbose mode:");
-//        HeapPrinter.print(fibHeap, true);
+        //stream.println("Printing in verbose mode:");
+        //HeapPrinter.print(fibHeap, true);
 
         for (int i = 20; i < 25; i++) {
+            System.out.println();
+            System.out.println("round " + i);
             if (heap.findMin() != fibHeap.findMin().getKey()) {
                 System.out.println("error1");
             } else if (heap.size() != fibHeap.size()) {
                 System.out.println("error2");
             }
-            System.out.println("curr min 4 = " + fibHeap.findMin().getKey());
-            System.out.println(nodes.get(i-20).getKey());
+            //System.out.println("curr min 4 = " + fibHeap.findMin().getKey());
+            System.out.println("key to delete=" + nodes.get(i-20).getKey());
             heap.delete(i);
             fibHeap.delete(nodes.get(i - 20));
+
             //stream.println("Printing in verbose mode:");
             //HeapPrinter.print(fibHeap, true);
 
         }
 
+        System.out.println();
+        System.out.println("deleteMin round:");
+
+        int i = 0;
         while (!heap.isEmpty()) {
+            System.out.println();
+            System.out.println("round " + i++);
             if (heap.findMin() != fibHeap.findMin().getKey() || heap.size() != fibHeap.size()) {
                 System.out.println("error3");
             }
             heap.deleteMin();
             fibHeap.deleteMin();
-            System.out.println("curr min 5 = " + fibHeap.findMin().getKey());
+            //System.out.println("curr min 5 = " + fibHeap.findMin().getKey());
 
         }
         if (!fibHeap.isEmpty()) {
@@ -187,7 +196,81 @@ public class HeapPrinter {
 //        HeapPrinter.print(heap, false);
     }
 
-    public static void main(String[] args) {
-        demo();
+    public static void test2() {
+        FibonacciHeap fibHeap = new FibonacciHeap();
+
+        stream.println("Printing in verbose mode:");
+        HeapPrinter.print(fibHeap, true);
+
+        int cuts = FibonacciHeap.totalCuts();
+        int links = FibonacciHeap.totalLinks();
+
+        System.out.println("counterRep empty:");
+        int[] counter1 = fibHeap.countersRep();
+        for (int i = 0; i < counter1.length; i++) {
+            System.out.println(counter1[i]);
+        }
+
+        fibHeap.insert(1);
+        fibHeap.insert(2);
+        fibHeap.insert(3);
+        fibHeap.insert(4);
+        fibHeap.insert(5);
+        fibHeap.insert(6);
+        fibHeap.insert(7);
+        fibHeap.insert(8);
+        fibHeap.insert(9);
+        fibHeap.insert(10);
+        fibHeap.insert(11);
+        fibHeap.insert(12);
+        fibHeap.insert(13);
+
+        fibHeap.deleteMin();
+
+        System.out.println();
+        System.out.println("counterRep not empty:");
+        int[] counter3 = fibHeap.countersRep();
+        for (int i = 0; i < counter3.length; i++) {
+            System.out.println(counter3[i]);
+        }
+
+        stream.println("Printing in verbose mode:");
+        HeapPrinter.print(fibHeap, true);
+
+//        if (fibHeap.potential() != 3) {
+//            System.out.println("error1");
+//        }
+//        if (FibonacciHeap.totalCuts() - cuts != 0) {
+//            System.out.println("error2");
+//        }
+//        if (FibonacciHeap.totalLinks() - links != 0) {
+//            System.out.println("error3");
+//        }
+//        if (fibHeap.countersRep()[0] != 3) {
+//            System.out.println("error4");
+//        }
+
     }
+    public static void test3() {
+        FibonacciHeap fibHeap = new FibonacciHeap();
+        for (int i = 0; i < 33; i++) {
+            fibHeap.insert(i);
+        }
+        fibHeap.deleteMin();
+
+        stream.println("Printing in verbose mode:");
+        HeapPrinter.print(fibHeap, true);
+
+        int[] kmin = FibonacciHeap.kMin(fibHeap, 10);
+        for (int i = 0; i < kmin.length; i++) {
+            if (kmin[i] != i + 1) {
+                System.out.println("i=" + i);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        test3();
+    }
+
 }

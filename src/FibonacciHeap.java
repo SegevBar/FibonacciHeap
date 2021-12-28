@@ -74,9 +74,11 @@ public class FibonacciHeap {
     */
     public void deleteMin() {
         if (this.min != null) {
+            //System.out.println("deleteMin deletes the key " + this.min.getKey());
             HeapNode currChild = this.min.getChild();
 
             if (currChild != null) {
+                //System.out.println("first child=" + currChild.getKey());
                 //connect left child of min to min prev
                 currChild.setPrev(this.min.getPrev());
                 if (this.min.getPrev() != null) {
@@ -131,6 +133,18 @@ public class FibonacciHeap {
                     this.tail = this.min.getPrev();
                 }
             }
+
+//            HeapNode p = this.head;
+//            while (p != null) {
+//                if (p == this.head) {
+//                    System.out.print("head=");
+//                }
+//                if (p == this.tail) {
+//                    System.out.print("tail=");
+//                }
+//                System.out.println("curr linked list= " + p.getKey());
+//                p = p.getNext();
+//            }
 
             //disconnect all min pointers
             this.min.setChild(null);
@@ -200,6 +214,7 @@ public class FibonacciHeap {
                 parent.setChild(child);
 
                 parent.setRank(parent.getRank() + 1);
+
                 //update array
                 curr = parent;
                 buckets[currRank] = null;
@@ -215,8 +230,17 @@ public class FibonacciHeap {
 
         //build the new linked list
         HeapNode currTree = buckets[0];
-        HeapNode nextTree = buckets[0];
+        HeapNode nextTree;
         boolean seenHead = false;
+
+//        for (int i = 0; i < buckets.length; i++) {
+//            if (buckets[i] == null) {
+//                System.out.println("tree=null");
+//            } else {
+//                System.out.println("tree=" + buckets[i].getKey() + "rank=" + buckets[i].getRank());
+//            }
+//        }
+
         for (int i = 0; i < buckets.length; i++) {
             if (buckets[i] != null) {
                 if (!seenHead) {
@@ -238,6 +262,12 @@ public class FibonacciHeap {
         }
         this.tail = currTree;
         currTree.setNext(null);
+
+//        HeapNode p = this.head;
+//        while (p != null) {
+//            System.out.println("node=" + p.getKey());
+//            p = p.getNext();
+//        }
     }
 
     /**
@@ -354,7 +384,7 @@ public class FibonacciHeap {
             curr = curr.getNext();
         }
         //build the counter - iterate throw heap trees and increment i index of array if current tree rank is i
-        int[] counterRep = new int[maxRank];
+        int[] counterRep = new int[maxRank+1];
         curr = this.head;
         while (curr != null) {
             int currRank = curr.getRank();
@@ -373,8 +403,10 @@ public class FibonacciHeap {
     * complexity : O(n)
     */
     public void delete(HeapNode x) {
-    	this.decreaseKey(x, x.getKey()-this.min.getKey()+10); //update x to be the minimum root
+        this.decreaseKey(x, x.getKey()+this.min.getKey()+10); //update x to be the minimum root
+        //System.out.println("delete- after decreaseKey=" + x.getKey() + " head=" + this.getHead().getKey() + " rank=" + x.getRank());
         this.deleteMin();  //delete minimum and consolidate the heap
+        //System.out.println("delete- after deleteMin= " + this.findMin().getKey());
     }
 
    /**
@@ -436,10 +468,12 @@ public class FibonacciHeap {
             this.markedCount--;
         }
         x.setIsRoot(true);  //turn on root flag
+
         //update min if x key is smaller than min key
         if (x.getKey() < this.min.getKey()) {
             this.min = x;
         }
+
         //update y child pointer and x brothers pointers
         if (y.getRank() == 1) {
             y.setChild(null);
@@ -458,6 +492,8 @@ public class FibonacciHeap {
         y.setRank(y.getRank()-1);  //update y rank
         //update x pointer
         x.setNext(this.head);
+        this.head.setPrev(x);
+
         x.setPrev(null);
         x.setParent(null);
         this.head = x;
@@ -519,21 +555,26 @@ public class FibonacciHeap {
     public static int[] kMin(FibonacciHeap H, int k) {
         FibonacciHeap Hk = new FibonacciHeap();  //create a help heap
         int[] kMinNodes = new int[k];  //create the array to be returned
+
         //add the min key to array
         if (H.findMin() != null) {
             kMinNodes[0] = H.findMin().getKey();
         }
         HeapNode curr = H.findMin();  //create a pointer to point on next minimum node in H
         HeapNode currMin = curr;  //create traveling pointer on H heap
+
+
+
         for (int i = 1; i < kMinNodes.length; i++) {
             curr = curr.getChild();  //go to current level minimum child
             while (curr != null) {  //add the current level minimum key children to Hk
                 Hk.insert(curr.getKey());
-                if (Hk.findMin().getKey() == curr.getKey()) {
+                if (Hk.findMin().getKey() == curr.getKey() && curr.getChild() != null) { //keep a pointer to the minimum key node of current level
                     currMin = curr;
                 }
                 curr = curr.getNext();
             }
+
             kMinNodes[i] = Hk.findMin().getKey();  //add Hk minimum to array - this is the next minimum key in H
             curr = currMin;
             Hk.deleteMin();  //delete Hk minimum to rearrange Hk to binomial heap
