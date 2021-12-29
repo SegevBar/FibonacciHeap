@@ -3,7 +3,7 @@
  *
  * An implementation of a Fibonacci Heap over integers.
  */
-public class FibonacciHeap {
+public class FibonacciHeapQ2 {
     private HeapNode head = null;
     private HeapNode tail = null;
     private HeapNode min = null;
@@ -303,7 +303,7 @@ public class FibonacciHeap {
     *
     * complexity : O(1)
     */
-    public void meld (FibonacciHeap heap2) {
+    public void meld (FibonacciHeapQ2 heap2) {
         //link the tail of the current list to the head of heap2
         this.tail.setNext(heap2.getHead());
         heap2.getHead().setPrev(this.tail);
@@ -408,7 +408,6 @@ public class FibonacciHeap {
      */
     private void cascadingCuts(HeapNode x, HeapNode y) {
         this.cut(x,y);  //cut x from its parent y
-
         if (!(y.getIsRoot())) {  //mark y if it is not a root
             //if y is not marked - mark it
             if (y.getMarked() == false) {
@@ -522,12 +521,12 @@ public class FibonacciHeap {
     *
     * complexity : O(k deg(H))
     */
-    public static int[] kMin(FibonacciHeap H, int k) {
+    public static int[] kMin(FibonacciHeapQ2 H, int k) {
         if (k == 0 || H.isEmpty()) {
             return new int[0];
         }
         int[] kMinNodes = new int[k];
-        FibonacciHeap heapForKMin = new FibonacciHeap();
+        FibonacciHeapQ2 heapForKMin = new FibonacciHeapQ2();
 
         HeapNode tempMin; // hold the node in H with the same key as the min in heapForKMin.
         HeapNode childOfLastMin; // hold one of the children of tempMin.
