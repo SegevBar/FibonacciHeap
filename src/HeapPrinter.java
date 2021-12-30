@@ -384,8 +384,92 @@ public class HeapPrinter {
         }
     }
 
+    public static void test7() {
+        FibonacciHeap fibHeap = new FibonacciHeap();
+
+        FibonacciHeap.HeapNode node5 = fibHeap.insert(5);
+        FibonacciHeap.HeapNode node6 = fibHeap.insert(6);
+        FibonacciHeap.HeapNode node7 = fibHeap.insert(7);
+        FibonacciHeap.HeapNode node8 = fibHeap.insert(8);
+        FibonacciHeap.HeapNode node0 = fibHeap.insert(0);
+        FibonacciHeap.HeapNode node1 = fibHeap.insert(1);
+        FibonacciHeap.HeapNode node2 = fibHeap.insert(2);
+        FibonacciHeap.HeapNode node3 = fibHeap.insert(3);
+        FibonacciHeap.HeapNode node4 = fibHeap.insert(4);
+        FibonacciHeap.HeapNode node9 = fibHeap.insert(9);
+        FibonacciHeap.HeapNode node10 = fibHeap.insert(10);
+        FibonacciHeap.HeapNode node11 = fibHeap.insert(11);
+        FibonacciHeap.HeapNode node12 = fibHeap.insert(12);
+        FibonacciHeap.HeapNode node13 = fibHeap.insert(13);
+
+        stream.println("Printing in verbose mode:");
+        HeapPrinter.print(fibHeap, false);
+
+        fibHeap.deleteMin();
+        stream.println("Printing in verbose mode:");
+        HeapPrinter.print(fibHeap, false);
+
+        fibHeap.deleteMin();
+        stream.println("Printing in verbose mode:");
+        HeapPrinter.print(fibHeap, true);
+
+//        System.out.println("total cuts=" + FibonacciHeap.totalCuts());
+//        System.out.println("tree count=" + fibHeap.getTreeCount());
+//        System.out.println("marked count=" + fibHeap.getMarkedCount());
+//
+//        fibHeap.decreaseKey(node11, 11);
+//        stream.println("Printing in verbose mode:");
+//        HeapPrinter.print(fibHeap, false);
+//
+//        System.out.println("total cuts=" + FibonacciHeap.totalCuts());
+//        System.out.println("tree count=" + fibHeap.getTreeCount());
+//        System.out.println("marked count=" + fibHeap.getMarkedCount());
+//
+//        fibHeap.decreaseKey(node13, 14);
+//        stream.println("Printing in verbose mode:");
+//        HeapPrinter.print(fibHeap, false);
+    }
+
+    public static void test8() {
+        FibonacciHeap H1 = new FibonacciHeap();
+        FibonacciHeap H2 = new FibonacciHeap();
+
+        H1.insert(13);
+        H1.insert(10);
+        H1.insert(5);
+        H1.insert(20);
+        H1.insert(17);
+
+        H1.deleteMin();
+        HeapPrinter.print(H1, false);
+
+
+        H2.insert(4);
+        H2.insert(1);
+        H2.insert(3);
+        H2.insert(0);
+        H2.insert(2);
+
+        //H2.deleteMin();
+        HeapPrinter.print(H2, false);
+
+        H1.meld(H2);
+        HeapPrinter.print(H1, false);
+
+        //H1.deleteMin();
+        HeapPrinter.print(H1, false);
+
+        System.out.println(H1.size());
+        System.out.println(H1.getTreeCount());
+        System.out.println(H1.getHead().getKey());
+        System.out.println(H1.getTail().getKey());
+        System.out.println(H1.findMin().getKey());
+
+
+    }
+
     public static void main(String[] args) {
-        test6();
+        test8();
     }
 
 }

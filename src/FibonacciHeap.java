@@ -76,7 +76,9 @@ public class FibonacciHeap {
         if (this.min != null) {
             HeapNode currChild = this.min.getChild();
 
+            //if min has a child (or children) - connect it (them) to root list
             if (currChild != null) {
+                //connect left child to left brother of min
                 currChild.setPrev(this.min.getPrev());
                 if (this.min.getPrev() != null) {
                     this.min.getPrev().setNext(currChild);
@@ -99,7 +101,7 @@ public class FibonacciHeap {
                     currChild.setParent(null);
                     currChild.setIsRoot(true);
                     if (currChild.getMarked()) {
-                        currChild.setMark(false);
+                        currChild.setMarked(false);
                         this.markedCount--;
                     }
                     if (!currChild.hasNext()) {
@@ -118,15 +120,15 @@ public class FibonacciHeap {
                 }
 
             }
-            else {
-                if (this.min != this.head) {
+            else {  //if min has no children - connect its left and right brothers unless they are the head to tail.
+                if (this.min != this.head) { //min has a left brother
                     this.min.getPrev().setNext(this.min.getNext());
-                } else {
+                } else {  //update new head
                     this.head = this.min.getNext();
                 }
-                if (this.min != this.tail) {
+                if (this.min != this.tail) { //min has a right child
                     this.min.getNext().setPrev(this.min.getPrev());
-                } else {
+                } else { //update new tail
                     this.tail = this.min.getPrev();
                 }
             }
@@ -144,8 +146,8 @@ public class FibonacciHeap {
             //update heap size, heap tree count, and min
             this.size--;
             this.treeCount = 0;
-            HeapNode curr = this.head;
             HeapNode currMin = this.head;
+            HeapNode curr = this.head;
             while (curr != null) {
                 if (curr.getKey() < currMin.getKey()) { //update current minimum if key is smaller
                     currMin = curr;
@@ -166,7 +168,7 @@ public class FibonacciHeap {
      * complexity : O(n)
      */
     private void consolidate() {
-        //create node array size log(n)
+        //create node array size log(n+1)
         int arraySize = (int) Math.ceil(Math.log(this.size+1)/Math.log(2));
         HeapNode[] buckets = new HeapNode[arraySize];
 
@@ -178,7 +180,7 @@ public class FibonacciHeap {
             int currRank = curr.getRank();
 
             //if the i place in the array is not null - link the trees. smaller key is the root.
-            while (currRank < buckets.length && buckets[currRank] != null) {
+            while (buckets[currRank] != null) {
                 HeapNode parent;
                 HeapNode child;
                 if (buckets[currRank].getKey() < curr.getKey()) {
@@ -224,12 +226,10 @@ public class FibonacciHeap {
                     currTree = buckets[i];
                     this.head = currTree;
                     currTree.setPrev(null);
-                    currTree.setMark(false);
                     currTree.setParent(null);
                     seenHead = true;
                 } else {
                     nextTree = buckets[i];
-                    nextTree.setMark(false);
                     nextTree.setParent(null);
                     currTree.setNext(nextTree);
                     nextTree.setPrev(currTree);
@@ -304,21 +304,28 @@ public class FibonacciHeap {
     * complexity : O(1)
     */
     public void meld (FibonacciHeap heap2) {
-        //link the tail of the current list to the head of heap2
-        this.tail.setNext(heap2.getHead());
-        heap2.getHead().setPrev(this.tail);
-
-        this.tail = heap2.getTail();  //update heap tail to heap2 tail
-
-        //update min to be heap2 min id key is smaller
-        if (heap2.findMin().getKey() < this.min.getKey()) {
+        //if current heap is empty - update head and min
+        if (this.isEmpty()) {
+            this.head = heap2.getHead();
             this.min = heap2.findMin();
+        } else {
+            //link the tail of the current list to the head of heap2
+            this.tail.setNext(heap2.getHead());
         }
+        //if heap2 not empty - connect heap2 head to current heap tail and check min
+        if (!heap2.isEmpty()) {
+            heap2.getHead().setPrev(this.tail);
+
+            //update min to be heap2 min if key is smaller
+            if (heap2.findMin().getKey() < this.min.getKey()) {
+                this.min = heap2.findMin();
+            }
+        }
+        this.tail = heap2.getTail();  //update heap tail to heap2 tail
         this.size += heap2.size();  //update heap size
         this.treeCount += heap2.getTreeCount();  //update heap tree count
         this.markedCount += heap2.getMarkedCount();  //update heap marked nodes count
     }
-
 
 
     /**
@@ -374,8 +381,10 @@ public class FibonacciHeap {
     * complexity : O(n)
     */
     public void delete(HeapNode x) {
-        this.decreaseKey(x, x.getKey()+this.min.getKey()+10); //update x to be the minimum root
-        this.deleteMin();  //delete minimum and consolidate the heap
+        if (x != null) {
+            this.decreaseKey(x, x.getKey() + this.min.getKey() + 10); //update x to be the minimum root
+            this.deleteMin();  //delete minimum and consolidate the heap
+        }
     }
 
    /**
@@ -387,13 +396,15 @@ public class FibonacciHeap {
     * complexity : O(log n)
     */
     public void decreaseKey(HeapNode x, int delta) {
-    	x.setKey(x.getKey()-delta);  //decrease x key by delta
-        //if the heap is illegal - use cascading cuts
-        if (!x.getIsRoot() && x.getParent().getKey() > x.getKey()) {
-            this.cascadingCuts(x, x.getParent());
-        } else {
-            if (x.getIsRoot() && x.getKey() < this.min.getKey()) {
-                this.min = x;
+        if (x != null) {
+            x.setKey(x.getKey() - delta);  //decrease x key by delta
+            //if the heap is illegal - use cascading cuts
+            if (!x.getIsRoot() && x.getParent().getKey() > x.getKey()) {
+                this.cascadingCuts(x, x.getParent());
+            } else {
+                if (x.getIsRoot() && x.getKey() < this.min.getKey()) {
+                    this.min = x;
+                }
             }
         }
     }
@@ -403,6 +414,7 @@ public class FibonacciHeap {
      *
      * if child is smaller than parent- cut child from tree
      * if parent is not a root and is not marked - mark it. else - call recursively to cascadingCuts
+     * @pre: x != null && y != null
      *
      * complexity : O(log n)
      */
@@ -412,7 +424,7 @@ public class FibonacciHeap {
         if (!(y.getIsRoot())) {  //mark y if it is not a root
             //if y is not marked - mark it
             if (y.getMarked() == false) {
-                y.setMark(true);
+                y.setMarked(true);
                 this.markedCount++;
             }
             //if y is already marked - call cascading cur recursively
@@ -426,6 +438,7 @@ public class FibonacciHeap {
      * private void cut(HeapNode x, HeapNode y)
      *
      * cut x from y
+     * @pre: x != null && y != null
      *
      * complexity : O(1)
      */
@@ -434,10 +447,11 @@ public class FibonacciHeap {
         //x becomes a root - update fields accordingly
         this.treeCount++;  //update treeCount
         if (x.getMarked()) {  //if x was marked - turn it off and update markedCount of the heap
-            x.setMark(false);
+            x.setMarked(false);
             this.markedCount--;
         }
-        x.setIsRoot(true);  //turn on root flag
+        x.setIsRoot(true);
+        x.setParent(null);
 
         //update min if x key is smaller than min key
         if (x.getKey() < this.min.getKey()) {
@@ -447,7 +461,7 @@ public class FibonacciHeap {
         //update y child pointer and x brothers pointers
         if (y.getRank() == 1) {
             y.setChild(null);
-        } else {
+        } else {  //y child points to x
             if (y.getChild() == x) {
                 y.setChild(x.getNext());
                 x.getNext().setPrev(null);
@@ -463,9 +477,8 @@ public class FibonacciHeap {
         //update x pointer
         x.setNext(this.head);
         this.head.setPrev(x);
-
         x.setPrev(null);
-        x.setParent(null);
+
         this.head = x;
     }
 
@@ -526,26 +539,27 @@ public class FibonacciHeap {
         if (k == 0 || H.isEmpty()) {
             return new int[0];
         }
-        int[] kMinNodes = new int[k];
+
         FibonacciHeap heapForKMin = new FibonacciHeap();
+        int[] kMinNodes = new int[k];
 
-        HeapNode tempMin; // hold the node in H with the same key as the min in heapForKMin.
-        HeapNode childOfLastMin; // hold one of the children of tempMin.
-        HeapNode tempForPointer; // hold the last inserted node to heapForKMin.
+        HeapNode currMin; // hold the node in H with the same key as the min in heapForKMin.
+        HeapNode minChild; // hold one of the children of tempMin.
+        HeapNode temp; // hold the last inserted node to heapForKMin.
 
-        tempForPointer = heapForKMin.insert(H.findMin().getKey());
-        tempForPointer.setkMin(H.findMin());
+        temp = heapForKMin.insert(H.findMin().getKey());
+        temp.setkMin(H.findMin());
 
         for (int i = 0; i < k; i++) {
-            tempMin = heapForKMin.findMin().getkMin();
-            kMinNodes[i] = tempMin.getKey();
+            currMin = heapForKMin.findMin().getkMin();
+            kMinNodes[i] = currMin.getKey();
             heapForKMin.deleteMin();
-            childOfLastMin = tempMin.getChild();
+            minChild = currMin.getChild();
 
-            while (childOfLastMin != null) {
-                tempForPointer = heapForKMin.insert(childOfLastMin.getKey());
-                tempForPointer.setkMin(childOfLastMin);
-                childOfLastMin = childOfLastMin.getNext();
+            while (minChild != null) {
+                temp = heapForKMin.insert(minChild.getKey());
+                temp.setkMin(minChild);
+                minChild = minChild.getNext();
             }
         }
         return kMinNodes;
@@ -627,7 +641,7 @@ public class FibonacciHeap {
         * update node mark to b
         * complexity : O(1)
         */
-       public void setMark(boolean b) {
+       public void setMarked(boolean b) {
            this.mark = b;
        }
 
@@ -720,14 +734,16 @@ public class FibonacciHeap {
        }
 
        /**
-        *
+        * return node kMin
+        * complexity : O(1)
         */
        public HeapNode getkMin() {
            return this.kMin;
        }
 
        /**
-        *
+        * update node kMin to node
+        * complexity : O(1)
         */
        public void setkMin(HeapNode node) {
            this.kMin = node;
