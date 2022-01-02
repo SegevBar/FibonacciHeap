@@ -326,92 +326,109 @@ public class HeapPrinter {
     public static void test5() {
         FibonacciHeap fibHeap = new FibonacciHeap();
 
-        int m = 1024;
-        FibonacciHeap.HeapNode[] node = new FibonacciHeap.HeapNode[m+1];
-
-        for (int i = 0; i < node.length; i++) {
-            FibonacciHeap.HeapNode curr = fibHeap.insert(i-1);
-            node[i] = curr;
+        int[] ms = new int[1];
+        //int[] powers = {10, 15, 20, 25};
+        int[] powers = {4};
+        for (int i = 0; i < ms.length; i++) {
+            ms[i] = (int) Math.pow(2, powers[i]);
         }
 
-//        for (int i=0; i < node.length; i++) {
-//            System.out.println(i + " " + node[i].getKey());
-//        }
-        fibHeap.deleteMin();
+        for (int j = 0; j < ms.length; j++) {
+            FibonacciHeap.HeapNode[] nodes = new FibonacciHeap.HeapNode[ms[j] + 1];
 
-        for (int i = 1; i <= 1024 ; i++) {
-            fibHeap.decreaseKey(node[m-i+1], m+1);
-            System.out.println("total cuts=" + FibonacciHeap.totalCuts());
-            System.out.println("tree count=" + fibHeap.getTreeCount());
-            System.out.println("marked count=" + fibHeap.getMarkedCount());
-        }
-        //stream.println("Printing in verbose mode:");
-        //HeapPrinter.print(fibHeap, false);
+            int[] powerToM = new int[powers[j]];
+            for (int i = 0; i < powerToM.length; i++) {
+                powerToM[i] = (int) Math.pow(2, i+1);
+            }
 
-        System.out.println("total cuts=" + FibonacciHeap.totalCuts());
-        System.out.println("tree count=" + fibHeap.getTreeCount());
-        System.out.println("marked count=" + fibHeap.getMarkedCount());
-
-    }
-
-    public static void test6() {
-        FibonacciHeap H = new FibonacciHeap();
-
-        int[] toInsert = {8,80};
-        int[] toDelete = {6,60};
-
-        for (int j = 0; j < toInsert.length; j++) {
             long start = System.currentTimeMillis();
 
-            for (int i = 0; i <= toInsert[j]; i++) {
-                H.insert(i);
+            for (int i = nodes.length - 1; i >= 0; i--) {
+                FibonacciHeap.HeapNode curr = fibHeap.insert(i - 1);
+                nodes[i] = curr;
             }
 
-            for (int i = 1; i <= toDelete[j]; i++) {
-                H.deleteMin();
-                HeapPrinter.print(H, false);
+            fibHeap.deleteMin();
+
+            for (int i = powerToM.length - 1; i >= 0; i--) {
+                fibHeap.decreaseKey(nodes[(ms[j] - powerToM[i] + 2)], ms[j] + 1);
             }
+            HeapPrinter.print(fibHeap, false);
+            System.out.println(nodes[(ms[j] - 1)].getKey());
+            fibHeap.decreaseKey(nodes[(ms[j] - 1)], ms[j] + 1);
+
             long end = System.currentTimeMillis();
 
             System.out.println();
-            System.out.println("Round : m = " + toInsert[j]);
-            System.out.println("Run-Time : " + (end-start));
-            System.out.println("totalLinks : " + FibonacciHeap.totalLinks());
-            System.out.println("totalCuts : " + FibonacciHeap.totalCuts());
-            System.out.println("Potential : " + H.potential());
+            HeapPrinter.print(fibHeap, false);
+            System.out.println("Round : m power = " + powers[j]);
+            System.out.println("Run-Time : " + (end - start));
+            System.out.println("total cuts= " + FibonacciHeap.totalCuts());
+            System.out.println("total marked= " + fibHeap.getMarkedCount());
+            System.out.println("tree count= " + fibHeap.getTreeCount());
+            System.out.println("potential= " + fibHeap.potential());
 
-            HeapPrinter.print(H, false);
         }
     }
 
-    public static void test7() {
-        FibonacciHeap fibHeap = new FibonacciHeap();
+        public static void test6 () {
+            FibonacciHeap H = new FibonacciHeap();
 
-        FibonacciHeap.HeapNode node5 = fibHeap.insert(5);
-        FibonacciHeap.HeapNode node6 = fibHeap.insert(6);
-        FibonacciHeap.HeapNode node7 = fibHeap.insert(7);
-        FibonacciHeap.HeapNode node8 = fibHeap.insert(8);
-        FibonacciHeap.HeapNode node0 = fibHeap.insert(0);
-        FibonacciHeap.HeapNode node1 = fibHeap.insert(1);
-        FibonacciHeap.HeapNode node2 = fibHeap.insert(2);
-        FibonacciHeap.HeapNode node3 = fibHeap.insert(3);
-        FibonacciHeap.HeapNode node4 = fibHeap.insert(4);
-        FibonacciHeap.HeapNode node9 = fibHeap.insert(9);
-        FibonacciHeap.HeapNode node10 = fibHeap.insert(10);
-        FibonacciHeap.HeapNode node11 = fibHeap.insert(11);
-        FibonacciHeap.HeapNode node12 = fibHeap.insert(12);
-        FibonacciHeap.HeapNode node13 = fibHeap.insert(13);
+            int[] toInsert = {8, 80};
+            int[] toDelete = {6, 60};
 
-        stream.println("Printing in verbose mode:");
-        HeapPrinter.print(fibHeap, false);
+            for (int j = 0; j < toInsert.length; j++) {
+                long start = System.currentTimeMillis();
 
-        fibHeap.deleteMin();
-        stream.println("Printing in verbose mode:");
-        HeapPrinter.print(fibHeap, false);
+                for (int i = 0; i <= toInsert[j]; i++) {
+                    H.insert(i);
+                }
 
-        fibHeap.deleteMin();
-        stream.println("Printing in verbose mode:");
-        HeapPrinter.print(fibHeap, true);
+                for (int i = 1; i <= toDelete[j]; i++) {
+                    H.deleteMin();
+                    HeapPrinter.print(H, false);
+                }
+                long end = System.currentTimeMillis();
+
+                System.out.println();
+                System.out.println("Round : m = " + toInsert[j]);
+                System.out.println("Run-Time : " + (end - start));
+                System.out.println("totalLinks : " + FibonacciHeap.totalLinks());
+                System.out.println("totalCuts : " + FibonacciHeap.totalCuts());
+                System.out.println("Potential : " + H.potential());
+
+                HeapPrinter.print(H, false);
+            }
+        }
+
+        public static void test7 () {
+            FibonacciHeap fibHeap = new FibonacciHeap();
+
+            FibonacciHeap.HeapNode node5 = fibHeap.insert(5);
+            FibonacciHeap.HeapNode node6 = fibHeap.insert(6);
+            FibonacciHeap.HeapNode node7 = fibHeap.insert(7);
+            FibonacciHeap.HeapNode node8 = fibHeap.insert(8);
+            FibonacciHeap.HeapNode node0 = fibHeap.insert(0);
+            FibonacciHeap.HeapNode node1 = fibHeap.insert(1);
+            FibonacciHeap.HeapNode node2 = fibHeap.insert(2);
+            FibonacciHeap.HeapNode node3 = fibHeap.insert(3);
+            FibonacciHeap.HeapNode node4 = fibHeap.insert(4);
+            FibonacciHeap.HeapNode node9 = fibHeap.insert(9);
+            FibonacciHeap.HeapNode node10 = fibHeap.insert(10);
+            FibonacciHeap.HeapNode node11 = fibHeap.insert(11);
+            FibonacciHeap.HeapNode node12 = fibHeap.insert(12);
+            FibonacciHeap.HeapNode node13 = fibHeap.insert(13);
+
+            stream.println("Printing in verbose mode:");
+            HeapPrinter.print(fibHeap, false);
+
+            fibHeap.deleteMin();
+            stream.println("Printing in verbose mode:");
+            HeapPrinter.print(fibHeap, false);
+
+            fibHeap.deleteMin();
+            stream.println("Printing in verbose mode:");
+            HeapPrinter.print(fibHeap, true);
 
 //        System.out.println("total cuts=" + FibonacciHeap.totalCuts());
 //        System.out.println("tree count=" + fibHeap.getTreeCount());
@@ -428,48 +445,84 @@ public class HeapPrinter {
 //        fibHeap.decreaseKey(node13, 14);
 //        stream.println("Printing in verbose mode:");
 //        HeapPrinter.print(fibHeap, false);
-    }
+        }
 
-    public static void test8() {
-        FibonacciHeap H1 = new FibonacciHeap();
-        FibonacciHeap H2 = new FibonacciHeap();
+        public static void test8 () {
+            FibonacciHeap H1 = new FibonacciHeap();
+            FibonacciHeap H2 = new FibonacciHeap();
 
-        H1.insert(13);
-        H1.insert(10);
-        H1.insert(5);
-        H1.insert(20);
-        H1.insert(17);
+            H1.insert(13);
+            H1.insert(10);
+            H1.insert(5);
+            H1.insert(20);
+            H1.insert(17);
 
-        H1.deleteMin();
-        HeapPrinter.print(H1, false);
-
-
-        H2.insert(4);
-        H2.insert(1);
-        H2.insert(3);
-        H2.insert(0);
-        H2.insert(2);
-
-        //H2.deleteMin();
-        HeapPrinter.print(H2, false);
-
-        H1.meld(H2);
-        HeapPrinter.print(H1, false);
-
-        //H1.deleteMin();
-        HeapPrinter.print(H1, false);
-
-        System.out.println(H1.size());
-        System.out.println(H1.getTreeCount());
-        System.out.println(H1.getHead().getKey());
-        System.out.println(H1.getTail().getKey());
-        System.out.println(H1.findMin().getKey());
+            H1.deleteMin();
+            HeapPrinter.print(H1, false);
 
 
-    }
+            H2.insert(4);
+            H2.insert(1);
+            H2.insert(3);
+            H2.insert(0);
+            H2.insert(2);
+
+            //H2.deleteMin();
+            HeapPrinter.print(H2, false);
+
+            H1.meld(H2);
+            HeapPrinter.print(H1, false);
+
+            //H1.deleteMin();
+            HeapPrinter.print(H1, false);
+
+            System.out.println(H1.size());
+            System.out.println(H1.getTreeCount());
+            System.out.println(H1.getHead().getKey());
+            System.out.println(H1.getTail().getKey());
+            System.out.println(H1.findMin().getKey());
+
+
+        }
+        public static void Q2() {
+            FibonacciHeap fibHeap = new FibonacciHeap();
+
+            int power = 2;
+            int m = (int) Math.pow(3, power)-1;
+            int toDel = 3*m/4;
+
+
+            long start = System.currentTimeMillis();
+
+            for (int i = 0; i <= m; i++) {
+                fibHeap.insert(i);
+            }
+            //HeapPrinter.print(fibHeap, false);
+
+            for (int i = 1; i <= toDel; i++) {
+                //System.out.println("curr min to delete: " + fibHeap.findMin().getKey());
+                fibHeap.deleteMin();
+
+            }
+            long end = System.currentTimeMillis();
+
+            HeapPrinter.print(fibHeap, false);
+
+            System.out.println();
+            System.out.println("m = " + m);
+            System.out.println("3m/4 = " + toDel);
+            System.out.println("Run-Time : " + (end - start));
+            System.out.println("total links= " + FibonacciHeap.totalLinks());
+            System.out.println("total cuts= " + FibonacciHeap.totalCuts());
+            System.out.println("total marked= " + fibHeap.getMarkedCount());
+            System.out.println("tree count= " + fibHeap.getTreeCount());
+            System.out.println("potential= " + fibHeap.potential());
+        }
+
+
 
     public static void main(String[] args) {
-        test8();
+        Q2();
     }
 
 }

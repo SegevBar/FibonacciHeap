@@ -1,4 +1,14 @@
 /**
+ * Submiters Info:
+ *
+ * name : Bar Pakula
+ * ID : 316294297
+ * moodle user : barpakula
+ *
+ * name : Bar Segev
+ * ID : 312456262
+ * moodle user : barsegev
+ *
  * FibonacciHeap
  *
  * An implementation of a Fibonacci Heap over integers.
@@ -180,7 +190,7 @@ public class FibonacciHeap {
             int currRank = curr.getRank();
 
             //if the i place in the array is not null - link the trees. smaller key is the root.
-            while (buckets[currRank] != null) {
+            while (currRank < buckets.length-1 && buckets[currRank] != null) {
                 HeapNode parent;
                 HeapNode child;
                 if (buckets[currRank].getKey() < curr.getKey()) {
